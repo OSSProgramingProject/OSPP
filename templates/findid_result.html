@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% block title %}아이디 찾기 결과 - Start ideabank{% endblock %}
+
+{% block content %}
+    <section class="py-5">
+        <div class="container px-5">
+            <div class="bg-light rounded-3 py-5 px-4 px-md-5 mb-5">
+                <div class="text-center mb-5">
+                    <h1 class="fw-bolder">아이디 찾기 결과</h1>
+                    <p class="lead fw-normal text-muted mb-0">사용자 아이디는 아래와 같습니다:</p>
+                    <h2 class="fw-bolder">{{ user_id }}</h2>
+                    <div class="mt-4">
+                        <a class="btn btn-light btn-lg px-4 me-sm-3" href="{% url 'login' %}">로그인</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}

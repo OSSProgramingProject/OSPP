@@ -1,0 +1,15 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+  <div class="container mt-5">
+    <h4>Are you sure you want to delete this message?</h4>
+    <p><strong>To:</strong> {{ message.receiver.username }}</p>
+    <p><strong>Message:</strong> {{ message.content }}</p>
+    
+    <form method="POST">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger">Yes, delete</button>
+        <a href="{% url 'profile_management' %}" class="btn btn-secondary">Cancel</a>
+    </form>
+  </div>
+{% endblock %}

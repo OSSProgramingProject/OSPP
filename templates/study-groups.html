@@ -1,0 +1,67 @@
+<!-- study-groups.html -->
+{% extends 'base.html' %}
+
+{% block title %}스터디 그룹 목록{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="text-center mb-5">
+        <h1 class="fw-bolder">스터디 그룹 목록</h1>
+        <p class="lead fw-normal text-muted mb-0">함께 학습하고 서로 도와줄 그룹을 찾아보세요!</p>
+    </div>
+    
+    <div class="row row-cols-1 row-cols-md-2 g-4">
+        {% for group in groups %}
+        <div class="col">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <a href="{% url 'study_group_detail' group.id %}">{{ group.name }}</a>
+                    </h5>
+                    <h6 class="card-subtitle mb-2 text-muted">주제: {{ group.topic }}</h6>
+                    <p class="card-text">{{ group.description }}</p>
+                    <p class="card-text"><strong>정원:</strong> {{ group.capacity }}명</p>
+                    <p class="card-text"><strong>참여 멤버:</strong></p>
+                    <ul>
+                        <li>{{ group.owner.username }} (생성자)</li>
+                        {% for member in group.members.all %}
+                            <li>{{ member.username }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                <div class="card-footer d-flex justify-content-between align-items-center">
+                    <span class="text-muted">생성일: {{ group.created_at|date:"Y년 m월 d일" }}</span>
+                    <div>
+                        {% if user == group.owner %}
+                        <form method="post" action="{% url 'delete_study_group' group.id %}" onsubmit="return confirm('정말로 이 그룹을 삭제하시겠습니까?');" class="d-inline">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-danger btn-sm">삭제</button>
+                        </form>
+                        {% endif %}
+                        {% if user not in group.members.all and group.members.count < group.capacity %}
+                        <form method="post" action="{% url 'join_study_group' group.id %}" class="d-inline">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-primary btn-sm">그룹 참여하기</button>
+                        </form>
+                        {% elif user in group.members.all %}
+                        <form method="post" action="{% url 'leave_study_group' group.id %}" class="d-inline">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-danger btn-sm">탈퇴하기</button>
+                        </form>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col">
+            <p class="text-center">현재 생성된 스터디 그룹이 없습니다.</p>
+        </div>
+        {% endfor %}
+    </div>
+    
+    <div class="text-center mt-5">
+        <a href="{% url 'create_study_group' %}" class="btn btn-primary">스터디 그룹 생성하기</a>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <h1>{{ user_profile.user.username }}님의 블로그</h1>
+    <div class="row">
+        {% if blog_posts %}
+            {% for blog in blog_posts %}
+                <div class="card mb-4">
+                    {% if blog.image %}
+                        <img class="card-img-top" src="{{ blog.image.url }}" alt="블로그 이미지">
+                    {% endif %}
+                    <div class="card-body">
+                        <h2 class="card-title">{{ blog.title }}</h2>
+                        <p class="card-text">{{ blog.content|truncatechars:100 }}</p>
+                        <a href="{% url 'blog_detail' blog.pk %}" class="btn btn-primary">자세히 보기 →</a>
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p>현재 게시된 블로그 글이 없습니다.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

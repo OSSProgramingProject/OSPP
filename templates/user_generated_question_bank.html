@@ -1,0 +1,99 @@
+{% extends 'base.html' %}
+
+{% block title %}사용자 생성 문제 은행 - Start ideabank{% endblock %}
+
+{% block content %}
+    
+<!-- User Generated Problem Bank Search Section-->
+<section class="py-5 bg-light" id="user-problem-search-section">
+    <div class="container px-5 my-5">
+        <div class="text-center">
+            <h2 class="fw-bolder">Explore User Generated Problems</h2>
+            <p class="lead fw-normal text-muted mb-5">Find problems created by users by category, difficulty, tags, or keywords</p>
+        </div>
+        <!-- User Problem Search Form-->
+        <form id="user-problem-search-form" method="get" action="{% url 'user_generated_question_bank' %}">
+            <div class="row gx-5">
+                <div class="col-md-6 mb-3">
+                    <label for="difficultySelect" class="form-label">Difficulty</label>
+                    <select id="difficultySelect" class="form-select" name="difficulty">
+                        <option value="" selected>Any Difficulty</option>
+                        <option value="Easy" {% if difficulty == "Easy" %}selected{% endif %}>쉬움</option>
+                        <option value="Medium" {% if difficulty == "Medium" %}selected{% endif %}>중간</option>
+                        <option value="Hard" {% if difficulty == "Hard" %}selected{% endif %}>어려움</option>
+                    </select>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label for="tagInput" class="form-label">Tags</label>
+                    <input type="text" class="form-control" id="tagInput" name="tags" placeholder="Enter tags (e.g., algebra, arrays)" value="{{ tags }}" />
+                </div>
+            </div>
+            <div class="d-flex justify-content-center">
+                <button type="submit" class="btn btn-primary btn-lg">Search</button>
+            </div>
+        </form>
+        <!-- User Problem List dynamically filled-->
+        <div id="user-problem-list" class="mt-5">
+            {% for problem in user_problems %}
+                <div class="problem-item border p-4 mb-3 rounded">
+                    <h5 class="fw-bolder">{{ problem.user.username }} - {{ problem.title }}</h5>
+                    <p class="text-muted">Category: {{ problem.category }} | Difficulty: {{ problem.difficulty }}</p>
+                    <p>{{ problem.tags|join:", " }}</p>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <a href="{% url 'problem_detail' problem.pk %}" class="btn btn-link" target="_blank">View Problem</a>
+                        <a href="{% url 'user_problem_solving_creation' problem_id=problem.id %}" class="btn btn-primary">문제 풀기</a>
+                    </div>
+                </div>
+            {% empty %}
+                <p class="text-center">No user-generated problems found.</p>
+            {% endfor %}
+        </div>
+
+        <!-- Pagination Section -->
+        <nav aria-label="User Problem Bank Pagination" class="mt-4">
+            <ul class="pagination justify-content-center">
+                {% if user_problems.has_previous %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ user_problems.previous_page_number }}" aria-label="Previous">
+                            <span aria-hidden="true">&laquo;</span>
+                        </a>
+                    </li>
+                {% else %}
+                    <li class="page-item disabled">
+                        <span class="page-link" aria-label="Previous">
+                            <span aria-hidden="true">&laquo;</span>
+                        </span>
+                    </li>
+                {% endif %}
+
+                {% for num in user_problems.paginator.page_range %}
+                    {% if num > user_problems.number|add:'-5' and num < user_problems.number|add:'5' %}
+                        {% if user_problems.number == num %}
+                            <li class="page-item active"><span class="page-link">{{ num }}</span></li>
+                        {% else %}
+                            <li class="page-item"><a class="page-link" href="?page={{ num }}">{{ num }}</a></li>
+                        {% endif %}
+                    {% endif %}
+                {% endfor %}
+
+                {% if user_problems.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ user_problems.next_page_number }}" aria-label="Next">
+                            <span aria-hidden="true">&raquo;</span>
+                        </a>
+                    </li>
+                {% else %}
+                    <li class="page-item disabled">
+                        <span class="page-link" aria-label="Next">
+                            <span aria-hidden="true">&raquo;</span>
+                        </span>
+                    </li>
+                {% endif %}
+            </ul>
+        </nav>
+    </div>
+</section>
+
+
+{% endblock %}
+

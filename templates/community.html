@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+
+{% load duration %}
+
+{% block title %}커뮤니티 - 아이디어뱅크{% endblock %}
+
+{% block content %}
+    <!-- Community Page Content -->
+    <section class="py-5">
+        <div class="container px-5 my-5">
+            <div class="text-center mb-5">
+                <h1 class="fw-bolder">커뮤니티</h1>
+                <p class="lead fw-normal text-muted mb-0">연결하고, 공유하고, 배우세요</p>
+            </div>
+
+            <!-- Q&A Section -->
+            <div class="row gx-5 mb-5">
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">질문 & 답변</h3>
+                        </div>
+                        <div class="card-body">
+                            <p>궁금한 점이 있으신가요? 질문하거나 답변을 작성하세요!</p>
+                            <a href="{% url 'qa_board' %}" class="btn btn-primary">Q&A 게시판으로 이동</a>
+                        </div>
+                    </div>
+                </div>
+                <!-- Resources Section -->
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">자료 공유</h3>
+                        </div>
+                        <div class="card-body">
+                            <p>유용한 자료나 학습 참고 자료를 공유하세요!</p>
+                            <a href="{% url 'resources_board' %}" class="btn btn-primary">자료 게시판으로 이동</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Groups/Study Section -->
+            <div class="card mb-5">
+                <div class="card-header">
+                    <h5>스터디 그룹 참여</h5>
+                </div>
+                <div class="card-body">
+                    <p>함께 학습하고 서로 도움을 주는 스터디 그룹에 참여하세요!</p>
+                    <a href="{% url 'study_groups' %}" class="btn btn-success">스터디 그룹 탐색</a>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-header">
+                    <h5>스터디 그룹 생성</h5>
+                </div>
+                <div class="card-body">
+                    <p>원하는 주제가 있다면 스터디 그룹을 생성해 보세요!</p>
+                    <a href="{% url 'create_study_group' %}" class="btn btn-warning">그룹 생성</a>
+                </div>
+            </div>
+
+            <!-- Announcements & Events Section -->
+            <h2 class="fw-bolder mb-3">공지사항 & 이벤트</h2>
+            <div class="list-group">
+                {% for contest in contests %}
+                    <div class="list-group-item">
+                        <h5 class="mb-1">{{ contest.name }}</h5>
+                        <p class="mb-1">시작 날짜: {{ contest.startTimeSeconds|date:"Y년 m월 d일 H:i" }}</p>
+                        <small>Duration: {{ contest.durationSeconds|duration }}</small>
+                        <div class="d-flex justify-content-end mt-3">
+                            <a href="https://codeforces.com/contest/{{ contest.id }}" class="btn btn-outline-primary" target="_blank">대회 바로가기</a>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+{% endblock %}

@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+    <!-- 블로그 게시글 상세보기 섹션 -->
+    <section class="py-5">
+        <div class="container px-5">
+            <div class="row justify-content-center">
+                <div class="col-lg-10 d-flex justify-content-center">
+                    <div class="card shadow-lg border-0 rounded-4" style="width: 800px;">
+                        <div class="card-body p-5">
+                            <h1 class="fw-bolder mb-4 text-primary text-center" style="font-size: 2.5rem;">{{ blog.title }}</h1>
+                            <div class="d-flex justify-content-between align-items-center mb-4">
+                                <div class="small text-muted">작성자: <strong>{{ blog.author.username }}</strong> | 작성일: {{ blog.created_at|date:"Y년 m월 d일 H:i" }}</div>
+                                <div class="badge bg-primary text-white" style="font-size: 1rem;">{{ blog.category }}</div>
+                            </div>
+                            <!-- 문제 정보 섹션 추가 -->
+                            {% if blog.problem_name %}
+                            <div class="problem-item p-4 mb-4 rounded bg-white" style="border: 2px solid #007bff;">
+                                <h5 class="fw-bolder text-secondary">문제 정보</h5>
+                                <p class="mb-2"><strong>문제 이름:</strong> {{ blog.problem_name }}</p>
+                                <p class="mb-2"><strong>Contest ID:</strong> {{ blog.contest_id }}</p>
+                                <p class="mb-2"><strong>Index:</strong> {{ blog.index }}</p>
+                                <p class="mb-2"><strong>Tags:</strong> {{ blog.tags }}</p>
+                                <div class="d-grid gap-2 mt-3">
+                                    <a href="https://codeforces.com/contest/{{ blog.contest_id }}/problem/{{ blog.index }}" class="btn btn-primary btn-lg" target="_blank">문제 바로가기</a>
+                                </div>
+                            </div>
+                            {% endif %}
+                            {% if blog.image %}
+                                <div class="text-center mb-4">
+                                    <img class="img-fluid rounded shadow" src="{{ blog.image.url }}" alt="블로그 이미지" style="max-height: 400px; object-fit: cover;">
+                                </div>
+                            {% endif %}
+                            <div class="content-section border p-4 mb-4 rounded bg-white" style="border: 2px solid #6c757d;">
+                                <h5 class="fw-bolder text-secondary mb-3">본문 내용</h5>
+                                <p class="fs-5" style="line-height: 1.8;">{{ blog.content|linebreaks }}</p>
+                            </div>
+                            <div class="d-flex justify-content-end mt-4">
+                                <a href="{% url 'blog_post' %}" class="btn btn-outline-secondary btn-lg">목록으로 돌아가기</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <style>
+        body {
+            background-color: #f7f9fc;
+        }
+        .card {
+            border-radius: 15px;
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+        }
+        .btn-outline-primary {
+            border-color: #007bff;
+            color: #007bff;
+        }
+        .btn-outline-primary:hover {
+            background-color: #007bff;
+            color: white;
+        }
+        .text-primary {
+            font-weight: 800;
+            text-transform: uppercase;
+        }
+        .badge {
+            font-size: 0.95em;
+        }
+        .content-text p {
+            margin-bottom: 1.2em;
+        }
+        .content-section {
+            background: #ffffff;
+            transition: box-shadow 0.3s;
+        }
+        .content-section:hover {
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        }
+        .problem-item {
+            transition: transform 0.3s;
+        }
+        .problem-item:hover {
+            transform: scale(1.02);
+        }
+    </style>
+{% endblock %}

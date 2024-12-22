@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block content %}
+<!-- 질문 수정 섹션 -->
+<section class="py-5">
+    <div class="container px-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="card shadow border-0">
+                    <div class="card-body p-5">
+                        <h1 class="fw-bolder mb-4">질문 수정하기</h1>
+                        <form method="POST" action="" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            <div class="mb-3">
+                                <label for="title" class="form-label">질문 제목</label>
+                                <input type="text" class="form-control" id="title" name="title" value="{{ form.title.value }}" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="category" class="form-label">카테고리</label>
+                                <select class="form-select" id="category" name="category" required>
+                                    <option value="알고리즘" {% if form.category.value == "알고리즘" %}selected{% endif %}>알고리즘</option>
+                                    <option value="자료구조" {% if form.category.value == "자료구조" %}selected{% endif %}>자료구조</option>
+                                    <option value="프로그래밍 언어" {% if form.category.value == "프로그래밍 언어" %}selected{% endif %}>프로그래밍 언어</option>
+                                    <option value="기타" {% if form.category.value == "기타" %}selected{% endif %}>기타</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="content" class="form-label">질문 내용</label>
+                                <textarea class="form-control" id="content" name="content" rows="10" required>{{ form.content.value }}</textarea>
+                            </div>
+                            <div class="d-flex justify-content-end">
+                                <button type="submit" class="btn btn-primary me-2">수정 완료</button>
+                                <a href="{% url 'qa_board' %}" class="btn btn-secondary">취소</a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,120 @@
+{% extends 'base.html' %}
+
+{% block title %}문제 업로드 - Start Ideabank{% endblock %}
+
+{% block content %}
+<style>
+    body {
+        background-color: #f5f7fa;
+    }
+    .title-box {
+        background: linear-gradient(45deg, #007bff, #0056b3);
+        color: white;
+        padding: 20px;
+        border-radius: 10px;
+        text-align: center;
+        margin-bottom: 30px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+    .form-section {
+        background: white;
+        border: 1px solid #ddd;
+        padding: 20px;
+        border-radius: 10px;
+        margin-bottom: 20px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+        transition: transform 0.2s;
+    }
+    .form-section:hover {
+        transform: scale(1.02);
+    }
+    .form-section h2 {
+        font-size: 1.4rem;
+        margin-bottom: 15px;
+        color: #333;
+    }
+    .btn-primary, .btn-success {
+        background: linear-gradient(45deg, #007bff, #0056b3);
+        border: none;
+        color: white;
+        padding: 10px 20px;
+        border-radius: 5px;
+        font-size: 1rem;
+        transition: background 0.3s ease;
+    }
+    .btn-primary:hover, .btn-success:hover {
+        background: linear-gradient(45deg, #0056b3, #003a75);
+    }
+    input, textarea, select {
+        border-radius: 5px;
+    }
+</style>
+
+<div class="container py-5">
+    <div class="title-box">
+        <h1>새 문제 업로드</h1>
+    </div>
+    <form method="POST" action="{% url 'problem_creation' %}" enctype="multipart/form-data">
+        {% csrf_token %}
+        
+        <!-- 문제 제목 -->
+        <div class="form-section">
+            <h2>문제 제목</h2>
+            <input type="text" class="form-control" name="title" placeholder="문제 제목을 입력하세요" required>
+        </div>
+
+        <!-- 문제 설명 -->
+        <div class="form-section">
+            <h2>문제 설명</h2>
+            <textarea class="form-control" name="description" rows="4" placeholder="문제 설명을 입력하세요"></textarea>
+        </div>
+
+        <!-- 예제 입력과 출력 -->
+        <div class="form-section">
+            <h2>예제 입력과 출력</h2>
+            <div class="row">
+                <div class="col-md-6">
+                    <label for="example_input" class="form-label">예제 입력</label>
+                    <textarea class="form-control" id="example_input" name="example_input" rows="4" placeholder="예제 입력을 입력하세요"></textarea>
+                </div>
+                <div class="col-md-6">
+                    <label for="example_output" class="form-label">예제 출력</label>
+                    <textarea class="form-control" id="example_output" name="example_output" rows="4" placeholder="예제 출력을 입력하세요"></textarea>
+                </div>
+            </div>
+        </div>
+
+        <!-- 이미지 업로드 -->
+        <div class="form-section">
+            <h2>이미지 업로드</h2>
+            <input type="file" class="form-control" name="image" accept="image/*">
+        </div>
+
+        <!-- 카테고리 -->
+        <div class="form-section">
+            <h2>카테고리</h2>
+            <select class="form-control" name="category">
+                <option value="Algorithm">알고리즘</option>
+                <option value="Data Structure">자료구조</option>
+                <option value="Mathematics">수학</option>
+                <option value="Others">기타</option>
+            </select>
+        </div>
+
+        <!-- 난이도 -->
+        <div class="form-section">
+            <h2>난이도</h2>
+            <select class="form-control" name="difficulty">
+                <option value="Easy">쉬움</option>
+                <option value="Medium">중간</option>
+                <option value="Hard">어려움</option>
+            </select>
+        </div>
+
+        <!-- 제출 버튼 -->
+        <div class="text-center mt-4">
+            <button type="submit" class="btn btn-success">문제 제출</button>
+        </div>
+    </form>
+</div>
+{% endblock %}

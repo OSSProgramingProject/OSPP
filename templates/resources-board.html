@@ -1,0 +1,84 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <!-- 페이지 헤더 -->
+    <header class="py-5 bg-light border-bottom mb-4">
+        <div class="container">
+            <div class="text-center my-5">
+                <h1 id="header-title" class="fw-bolder editable" contenteditable="false">자료게시판에 오신 것을 환영합니다!</h1>
+                <p id="header-description" class="lead mb-0 editable" contenteditable="false">여러분의 유용한 자료를 공유하고 함께 성장해요!</p>
+                <a id="header-button" href="{% url 'data_upload' %}" class="btn btn-primary mt-3">자료 올리기</a>
+                <button id="save-header-button" class="btn btn-success mt-3 d-none">저장</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- 자료 목록 -->
+    <div class="container">
+        <div class="row">
+            <!-- 자료 게시물 -->
+            <div class="col-lg-12">
+                {% for data in datas %}
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <div class="small text-muted">{{ data.created_at|date:"Y년 m월 d일" }}</div>
+                        <h2 class="card-title">{{ data.title }}</h2>
+                        <p class="card-text">{{ data.content|truncatewords:20 }}</p>
+                        <a class="btn btn-primary" href="{% url 'data_detail' data.id %}">자세히 보기 →</a>
+                        {% if user.is_authenticated and data.author == user %}
+                            <a class="btn btn-secondary" href="{% url 'data_edit' data.id %}">수정하기</a>
+                            <form method="POST" action="{% url 'data_delete' data.id %}" style="display: inline;">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-danger" onclick="return confirm('정말 삭제하시겠습니까?')">삭제하기</button>
+                            </form>
+                        {% endif %}
+                    </div>
+                </div>
+                {% empty %}
+                <p>아직 등록된 자료가 없습니다. 자료를 작성해 보세요!</p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block extra_js %}
+    <script>
+        // 요소 선택
+        const headerTitle = document.getElementById('header-title');
+        const headerDescription = document.getElementById('header-description');
+        const editButton = document.getElementById('edit-header-button');
+        const saveButton = document.getElementById('save-header-button');
+
+        // 페이지 로드 시 로컬 스토리지에서 데이터 불러오기
+        document.addEventListener('DOMContentLoaded', () => {
+            const savedTitle = localStorage.getItem('headerTitle');
+            const savedDescription = localStorage.getItem('headerDescription');
+
+            if (savedTitle) headerTitle.textContent = savedTitle;
+            if (savedDescription) headerDescription.textContent = savedDescription;
+        });
+
+        // 수정 버튼 클릭 시
+        if (editButton) {
+            editButton.addEventListener('click', () => {
+                headerTitle.contentEditable = "true";
+                headerDescription.contentEditable = "true";
+                editButton.classList.add('d-none');
+                saveButton.classList.remove('d-none');
+            });
+        }
+
+        // 저장 버튼 클릭 시
+        saveButton.addEventListener('click', () => {
+            headerTitle.contentEditable = "false";
+            headerDescription.contentEditable = "false";
+            if (editButton) editButton.classList.remove('d-none');
+            saveButton.classList.add('d-none');
+            
+            // 로컬 스토리지에 저장
+            localStorage.setItem('headerTitle', headerTitle.textContent);
+            localStorage.setItem('headerDescription', headerDescription.textContent);
+        });
+    </script>
+{% endblock %}

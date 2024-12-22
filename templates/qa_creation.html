@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <!-- 질문 작성 섹션 -->
+    <header class="bg-light py-10">
+        <div class="container px-3">
+            <div class="text-center my-5">
+                <h1 class="fw-bolder">질문 작성하기</h1>
+                <p class="lead mb-0">궁금한 점을 자유롭게 물어보세요!</p>
+            </div>
+        </div>
+    </header>
+
+    <!-- 질문 작성 폼 -->
+    <section class="py-5">
+        <div class="container px-5">
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    <div class="card shadow border-0">
+                        <div class="card-body p-5">
+                            <form method="POST" action="{% url 'qa_creation' %}">
+                                {% csrf_token %}
+                                <div class="mb-3">
+                                    <label for="title" class="form-label">질문 제목</label>
+                                    <input type="text" class="form-control" id="title" name="title" placeholder="질문 제목을 입력하세요" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="category" class="form-label">카테고리</label>
+                                    <select class="form-select" id="category" name="category" required>
+                                        <option value="">카테고리를 선택하세요</option>
+                                        <option value="알고리즘">알고리즘</option>
+                                        <option value="자료구조">자료구조</option>
+                                        <option value="프로그래밍 언어">프로그래밍 언어</option>
+                                        <option value="기타">기타</option>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="content" class="form-label">질문 내용</label>
+                                    <textarea class="form-control" id="content" name="content" rows="10" placeholder="질문 내용을 입력하세요" required></textarea>
+                                </div>
+                                <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                                    <button type="submit" class="btn btn-primary">질문 등록</button>
+                                    <a href="{% url 'qa_board' %}" class="btn btn-secondary">취소</a>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}

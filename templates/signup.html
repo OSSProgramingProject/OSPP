@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+
+{% block title %}회원가입 - Start ideabank{% endblock %}
+
+{% block content %}
+    <!-- Register Content -->
+    <section class="py-5">
+        <div class="container px-5">
+            <div class="bg-light rounded-3 py-5 px-4 px-md-5 mb-5">
+                <div class="text-center mb-5">
+                    <h1 class="fw-bolder">회원가입</h1>
+                    <p class="lead fw-normal text-muted mb-0">필수 정보를 입력해주세요</p>
+                </div>
+                <div class="row gx-5 justify-content-center">
+                    <div class="col-lg-6 col-xl-4">
+                        <form id="registerForm" method="POST">
+                            {% csrf_token %}
+                            <!-- Username input-->
+                            <div class="form-floating mb-3">
+                                <input class="form-control" id="username" type="text" name="username" placeholder="Enter your username..." required />
+                                <label for="username">Username</label>
+                            </div>
+                            <!-- Email input-->
+                            <div class="form-floating mb-3">
+                                <input class="form-control" id="email" type="email" name="email" placeholder="name@example.com" required />
+                                <label for="email">Email</label>
+                            </div>
+                            <!-- Password input-->
+                            <div class="form-floating mb-3">
+                                <input class="form-control" id="password" type="password" name="password1" placeholder="Enter your password..." required />
+                                <label for="password">Password</label>
+                            </div>
+                            <!-- Confirm Password input-->
+                            <div class="form-floating mb-3">
+                                <input class="form-control" id="confirmPassword" type="password" name="password2" placeholder="Confirm your password..." required />
+                                <label for="confirmPassword">Confirm Password</label>
+                            </div>
+                            <!-- Submit Button-->
+                            <div class="d-grid">
+                                <button class="btn btn-primary btn-lg" type="submit">Register</button>
+                            </div>
+                        </form>
+                        <!-- Login Link -->
+                        <div class="text-center mt-4">
+                            <p class="text-center mb-2">이미 계정이 있으신가요?</p>
+                            <a class="btn btn-light btn-lg px-4 me-sm-3" href="{% url 'login' %}">로그인</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}

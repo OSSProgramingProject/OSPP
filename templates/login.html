@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+
+{% block title %}Login - Start ideabank{% endblock %}
+
+{% block content %}
+    <!-- Login Content -->
+    <section class="py-5">
+        <div class="container px-5">
+            <div class="bg-light rounded-3 py-5 px-4 px-md-5 mb-5">
+                <div class="text-center mb-5">
+                    <h1 class="fw-bolder">Login</h1>
+                    <p class="lead fw-normal text-muted mb-0">Please enter your credentials</p>
+                </div>
+                <div class="row gx-5 justify-content-center">
+                    <div class="col-lg-6 col-xl-4">
+                        <!-- Login Form -->
+                        <form id="loginForm" method="POST">
+                            {% csrf_token %}
+                            <!-- Username input -->
+                            <div class="form-floating mb-3">
+                                <input class="form-control" id="username" name="username" type="text" placeholder="Enter your username..." required />
+                                <label for="username">Username</label>
+                            </div>
+                            <!-- Password input -->
+                            <div class="form-floating mb-3">
+                                <input class="form-control" id="password" name="password" type="password" placeholder="Enter your password..." required />
+                                <label for="password">Password</label>
+                            </div>
+                            <!-- Submit Button -->
+                            <div class="d-grid">
+                                <button class="btn btn-primary btn-lg" type="submit">Login</button>
+                            </div>
+                        </form>
+                        <!-- Register and Forgot Password Links -->
+                        <div class="text-center mt-4">
+                            <a class="btn btn-link" href="{% url 'signup' %}">Sign Up</a>
+                            <span class="text-muted mx-1">|</span>
+                            <a class="btn btn-link" href="{% url 'find_id' %}">Find Username</a>
+                            <span class="text-muted mx-1">|</span>
+                            <a class="btn btn-link" href="{% url 'findpassword' %}">Forgot Password?</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}

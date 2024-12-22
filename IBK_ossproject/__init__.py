@@ -1,0 +1,1 @@
+default_app_config = 'IBK_ossproject.apps.MyAppConfig'

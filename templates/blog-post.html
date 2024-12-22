@@ -1,0 +1,174 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <!-- 페이지 헤더 -->
+    <header class="py-5 bg-light border-bottom mb-4">
+        <div class="container">
+            <div class="text-center my-5">
+                <h1 id="header-title" class="fw-bolder editable" contenteditable="false">블로그에 오신 것을 환영합니다!</h1>
+                <p id="header-description" class="lead mb-0 editable" contenteditable="false">다양한 문제와 풀이를 공유하는 플랫폼</p>
+                <a id="header-button" href="{% url 'blog_creation' %}" class="btn btn-primary mt-3">블로그 게시하기</a>
+                <button id="save-header-button" class="btn btn-success mt-3 d-none">저장</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- 페이지 내용 -->
+    <div class="container">
+        <div class="row">
+            <!-- 검색 위젯 -->
+            <div class="card mb-4">
+                <div class="card-header">검색</div>
+                <div class="card-body">
+                    <form method="GET" action="{% url 'blog_search' %}">
+                        <div class="input-group">
+                            <input class="form-control" type="text" name="q" placeholder="검색어를 입력하세요..." value="{{ query|default_if_none:'' }}">
+                            <button class="btn btn-primary" type="submit">검색</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- 메인 콘텐츠 -->
+            <div class="col-lg-9">
+                <!-- 검색 결과 표시 -->
+                {% if query and query.strip %}
+                    <div class="my-4">
+                        <h4 class="fw-bold">검색 결과: "{{ query }}"</h4>
+                        {% if blog_posts %}
+                            <div class="row gx-5">
+                                {% for blog in blog_posts %}
+                                    <div class="col-lg-12 mb-4">
+                                        <div class="card">
+                                            {% if blog.image %}
+                                                <img class="card-img-top" src="{{ blog.image.url }}" alt="{{ blog.title }}">
+                                            {% endif %}
+                                            <div class="card-body">
+                                                <h5 class="card-title">{{ blog.title }}</h5>
+                                                <p class="card-text">{{ blog.content|truncatechars:100 }}</p>
+                                                <a href="{% url 'blog_detail' blog.pk %}" class="btn btn-primary">자세히 보기</a>
+                                                {% if blog.author == user %}
+                                                    <a href="{% url 'blog_edit' blog.pk %}" class="btn btn-warning">수정</a>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            <p>검색 결과가 없습니다.</p>
+                        {% endif %}
+                    </div>
+                {% else %}
+                    <!-- 기본 블로그 게시글 목록 -->
+                    <div class="row">
+                        {% for blog in blog_posts %}
+                            <div class="card mb-4">
+                                {% if blog.image %}
+                                    <img class="card-img-top" src="{{ blog.image.url }}" alt="...">
+                                {% endif %}
+                                <div class="card-body">
+                                    <div class="small text-muted">{{ blog.created_at|date:"Y년 m월 d일" }}</div>
+                                    <h2 class="card-title">{{ blog.title }}</h2>
+                                    <!--p class="card-text">{{ blog.content|truncatechars:100 }}</p-->
+                                    <!--h2 class="card-title">
+                                        {% if blog.problem_name %}
+                                            {{ blog.problem_name }}
+                                        {% else %}
+                                            {{ blog.title }}
+                                        {% endif %}
+                                    </h2-->
+                                    <p class="card-text">
+                                        {% if blog.problem_name %}
+                                        Problem: {{ blog.contest_id }} - {{ blog.index }} ({{ blog.problem_name }})<br>
+                                        Tags : {{ blog.tags }}
+                                        {% else %}
+                                            {{ blog.content|truncatechars:100 }}
+                                        {% endif %}
+                                    </p>
+
+                                    <a class="btn btn-primary" href="{% url 'blog_detail' blog.pk %}">자세히 보기 →</a>
+                                    {% if blog.author == user %}
+                                        <a href="{% url 'blog_edit' blog.pk %}?source=blog" class="btn btn-warning">수정</a>
+                                        <form method="POST" action="{% url 'blog_delete' blog.pk %}?source=blog" class="d-inline">
+                                            {% csrf_token %}
+                                            <button type="submit" class="btn btn-danger">삭제</button>
+                                        </form>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        {% empty %}
+                            <p>게시글이 없습니다.</p>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+
+            <!-- 사이드바 -->
+            <div class="col-lg-3">
+                <!-- 카테고리 검색 위젯 -->
+                <div class="card mb-4">
+                    <div class="card-header">카테고리 검색</div>
+                    <div class="card-body">
+                        <form method="GET" action="{% url 'blog_category_search' %}">
+                            <div class="input-group">
+                                <input class="form-control" type="text" name="category" placeholder="카테고리를 입력하세요..." value="{{ category|default_if_none:'' }}">
+                                <button class="btn btn-primary" type="submit">검색</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- 기존 블로그 게시 버튼 -->
+                <div class="card mb-4">
+                    <div class="card-header">블로그 게시하기</div>
+                    <div class="card-body">
+                        <a href="{% url 'blog_creation' %}" class="btn btn-primary">게시물 작성하기</a>
+                    </div>
+                </div>
+            </div>
+
+
+            
+        </div>
+    </div>
+{% endblock %}
+
+{% block extra_js %}
+    <script>
+        // 요소 선택
+        const headerTitle = document.getElementById('header-title');
+        const headerDescription = document.getElementById('header-description');
+        const editButton = document.getElementById('edit-header-button');
+        const saveButton = document.getElementById('save-header-button');
+
+        // 페이지 로드 시 로컬 스토리지에서 데이터 불러오기
+        document.addEventListener('DOMContentLoaded', () => {
+            const savedTitle = localStorage.getItem('headerTitle');
+            const savedDescription = localStorage.getItem('headerDescription');
+
+            if (savedTitle) headerTitle.textContent = savedTitle;
+            if (savedDescription) headerDescription.textContent = savedDescription;
+        });
+
+        // 수정 버튼 클릭 시
+        editButton.addEventListener('click', () => {
+            headerTitle.contentEditable = "true";
+            headerDescription.contentEditable = "true";
+            editButton.classList.add('d-none');
+            saveButton.classList.remove('d-none');
+        });
+
+        // 저장 버튼 클릭 시
+        saveButton.addEventListener('click', () => {
+            headerTitle.contentEditable = "false";
+            headerDescription.contentEditable = "false";
+            editButton.classList.remove('d-none');
+            saveButton.classList.add('d-none');
+            
+            // 로컬 스토리지에 저장
+            localStorage.setItem('headerTitle', headerTitle.textContent);
+            localStorage.setItem('headerDescription', headerDescription.textContent);
+        });
+    </script>
+{% endblock %}

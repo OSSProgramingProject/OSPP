@@ -1,0 +1,43 @@
+<!-- create-study-group.html -->
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}스터디 그룹 생성{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="text-center mb-5">
+        <h1 class="fw-bolder">스터디 그룹 생성</h1>
+        <p class="lead fw-normal text-muted mb-0">새로운 스터디 그룹을 만들어 함께 학습하세요!</p>
+    </div>
+    
+    <div class="row justify-content-center">
+        <div class="col-lg-6">
+            <div class="card shadow">
+                <div class="card-body">
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label for="id_name" class="form-label">그룹 이름</label>
+                            {{ form.name|as_crispy_field }}
+                        </div>
+                        <div class="mb-3">
+                            <label for="id_topic" class="form-label">주제</label>
+                            {{ form.topic|as_crispy_field }}
+                        </div>
+                        <div class="mb-3">
+                            <label for="id_description" class="form-label">설명</label>
+                            {{ form.description|as_crispy_field }}
+                        </div>
+                        <div class="mb-3">
+                            <label for="id_capacity" class="form-label">정원 (최대 참여 인원)</label>
+                            {{ form.capacity|as_crispy_field }}
+                        </div>
+                        <button type="submit" class="btn btn-success w-100">스터디 그룹 생성하기</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

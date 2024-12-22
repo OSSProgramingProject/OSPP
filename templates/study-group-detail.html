@@ -1,0 +1,137 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ group.name }} - 스터디 그룹 상세{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="text-center mb-5">
+        <h1 class="fw-bolder display-4 text-primary">{{ group.name }}</h1>
+        <p class="lead fw-normal text-muted mb-3">주제: {{ group.topic }}</p>
+        <p class="text-muted fs-5">{{ group.description }}</p>
+    </div>
+    
+    <div class="row">
+        <div class="col-lg-8 mb-4">
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                    <h2 class="fw-bolder mb-0">미션 설정 및 진행 사항</h2>
+                    {% if user == group.owner %}
+                    <a href="{% url 'create_mission' group.id %}" class="btn btn-light btn-sm">미션 추가</a>
+                    {% endif %}
+                </div>
+                <div class="card-body">
+                    <p>그룹의 미션을 설정하고 그룹원들의 진행 상황을 공유하세요.</p>
+                    {% if missions.exists %}
+                    <ul class="list-group">
+                        {% for mission in missions %}
+                            {% if not mission.is_deleted %}
+                            <li class="list-group-item">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h5 class="mb-1">{{ mission.title }}</h5>
+                                        <p class="mb-1">{{ mission.description }}</p>
+                                        <small class="text-muted">마감일: {{ mission.deadline }}</small>
+                                    </div>
+                                    {% if user == group.owner %}
+                                    <form method="post" action="{% url 'delete_mission' mission.id %}" onsubmit="return confirm('정말로 이 미션을 삭제하시겠습니까?');">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-danger btn-sm">삭제</button>
+                                    </form>
+                                    {% endif %}
+                                </div>
+                                <hr>
+                                {% if user == group.owner or user in group.members.all %}
+                                <form method="post" action="{% url 'upload_progress' mission.id %}" enctype="multipart/form-data" class="mt-3">
+                                    {% csrf_token %}
+                                    <div class="mb-3">
+                                        <label for="progress_{{ mission.id }}" class="form-label">진행 사항:</label>
+                                        <textarea class="form-control" id="progress_{{ mission.id }}" name="progress" rows="3" required></textarea>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="attachment_{{ mission.id }}" class="form-label">파일 첨부 (선택 사항):</label>
+                                        <input type="file" class="form-control" id="attachment_{{ mission.id }}" name="attachment">
+                                    </div>
+                                    <button type="submit" class="btn btn-success btn-sm">진행 사항 업로드</button>
+                                </form>
+                                {% endif %}
+                                {% with mission.progress_set.all as progresses %}
+                                {% if progresses.exists %}
+                                <ul class="list-group mt-3">
+                                    {% for progress in progresses %}
+                                    <li class="list-group-item">
+                                        <p class="mb-1"><strong>{{ progress.user.username }}</strong>: {{ progress.details }}</p>
+                                        {% if progress.attachment %}
+                                        <a href="{{ progress.attachment.url }}" class="text-decoration-none" target="_blank">첨부 파일 보기</a>
+                                        {% endif %}
+                                    </li>
+                                    {% endfor %}
+                                </ul>
+                                {% else %}
+                                <div class="alert alert-warning mt-3">아직 업로드된 진행 사항이 없습니다.</div>
+                                {% endif %}
+                                {% endwith %}
+                            </li>
+                            {% endif %}
+                        {% endfor %}
+                    </ul>
+                    {% else %}
+                    <div class="alert alert-info">아직 추가된 미션이 없습니다.</div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div class="card shadow-sm border-0 mb-4">
+                <div class="card-header bg-success text-white">
+                    <h2 class="fw-bolder mb-0">참여 멤버</h2>
+                </div>
+                <div class="card-body">
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            {{ group.owner.username }} <span class="badge bg-primary rounded-pill">생성자</span>
+                        </li>
+                        {% for member in group.members.all %}
+                            <li class="list-group-item">{{ member.username }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-secondary text-white">
+                    <h2 class="fw-bolder mb-0">그룹 히스토리</h2>
+                </div>
+                <div class="card-body">
+                    <p>미션의 데드라인이 지나거나 삭제된 경우 이곳에 기록됩니다.</p>
+                    {% for mission in missions %}
+                        {% if mission.deadline < today or mission.is_deleted %}
+                        <div class="card mb-3">
+                            <div class="card-body">
+                                <h5 class="card-title">{{ mission.title }} (마감일: {{ mission.deadline }})</h5>
+                                <p class="card-text">{{ mission.description }}</p>
+                                <h6>참여자들의 성과:</h6>
+                                {% with mission.progress_set.all as progresses %}
+                                {% if progresses.exists %}
+                                <ul class="list-group list-group-flush">
+                                    {% for progress in progresses %}
+                                    <li class="list-group-item">
+                                        <strong>{{ progress.user.username }}</strong>: {{ progress.details }}
+                                        {% if progress.attachment %}
+                                        <a href="{{ progress.attachment.url }}" class="text-decoration-none" target="_blank">첨부 파일 보기</a>
+                                        {% endif %}
+                                    </li>
+                                    {% endfor %}
+                                </ul>
+                                {% else %}
+                                <p class="text-muted">아직 업로드된 진행 사항이 없습니다.</p>
+                                {% endif %}
+                                {% endwith %}
+                            </div>
+                        </div>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+
+{% block title %}{{ problem.title }} - 문제 상세 보기{% endblock %}
+
+{% block content %}
+<section class="py-5">
+    <div class="container px-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-10">
+                <div class="card shadow-lg border-0">
+                    <div class="card-body p-5">
+                        <!-- 제목 -->
+                        <h1 class="fw-bolder mb-4 text-primary">{{ problem.title }}</h1>
+                        
+                        <!-- 작성 정보 -->
+                        <div class="d-flex justify-content-between align-items-center mb-4">
+                            <div class="small text-muted">
+                                작성자: <strong>{{ problem.author.username }}</strong> | 
+                                작성일: {{ problem.created_at|date:"Y년 m월 d일 H:i" }}
+                            </div>
+                            <div class="badge bg-secondary text-white">{{ problem.category }}</div>
+                        </div>
+
+                        <!-- 이미지 -->
+                        {% if problem.image %}
+                            <img class="img-fluid rounded mb-4" src="{{ problem.image.url }}" alt="문제 이미지" style="max-width: 600px;">
+                        {% endif %}
+
+                        <!-- 문제 설명 -->
+                        <h3 class="fw-bold">문제 설명</h3>
+                        <p class="fs-5 mb-4">{{ problem.description }}</p>
+
+                        <!-- 예제 입력과 출력 -->
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h3 class="fw-bold">예제 입력</h3>
+                                <pre class="bg-light p-3 rounded">{{ problem.example_input }}</pre>
+                            </div>
+                            <div class="col-md-6">
+                                <h3 class="fw-bold">예제 출력</h3>
+                                <pre class="bg-light p-3 rounded">{{ problem.example_output }}</pre>
+                            </div>
+                        </div>
+
+                        <!-- 난이도 -->
+                        <div class="mb-4">
+                            <p><strong>난이도:</strong> {{ problem.get_difficulty_display }}</p>
+                        </div>
+
+                        <!-- 버튼 -->
+                        <div class="d-flex justify-content-end mt-4">
+                            <a href="{% url 'user_generated_question_bank' %}" class="btn btn-outline-secondary">목록으로 돌아가기</a>
+                            {% if problem.author == user %}
+                                <a href="{% url 'edit_problem' problem.pk %}" class="btn btn-warning ms-3">수정</a>
+                                <form method="POST" action="{% url 'delete_problem' problem.pk %}" style="display: inline;">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-danger ms-3" onclick="return confirm('정말 삭제하시겠습니까?')">삭제</button>
+                                </form>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,71 @@
+<!-- create-mission.html -->
+{% extends 'base.html' %}
+{% load form_tags %}
+
+{% block title %}미션 생성 - {{ group.name }}{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="text-center mb-5">
+        <h1 class="fw-bolder display-4 text-primary">미션 생성 - {{ group.name }}</h1>
+        <p class="lead text-muted">미션을 통해 그룹의 목표를 더 쉽게 달성하세요!</p>
+    </div>
+    
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card shadow-lg border-0 rounded-4">
+                <div class="card-body p-5">
+                    <h2 class="card-title text-center mb-4 text-secondary">새로운 미션 만들기</h2>
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            {{ form.title.label_tag }}
+                            {{ form.title|add_class:"form-control form-control-lg rounded-3 shadow-sm" }}
+                        </div>
+                        <div class="mb-3">
+                            {{ form.description.label_tag }}
+                            {{ form.description|add_class:"form-control form-control-lg rounded-3 shadow-sm" }}
+                        </div>
+                        <div class="mb-3">
+                            {{ form.deadline.label_tag }}
+                            {{ form.deadline|add_class:"form-control form-control-lg rounded-3 shadow-sm" }}
+                        </div>
+                        <div class="d-grid gap-2 mt-4">
+                            <button type="submit" class="btn btn-gradient btn-lg text-white">미션 생성하기</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    body {
+        background: linear-gradient(to right, #e0eafc, #cfdef3);
+    }
+    .card {
+        background: #ffffff;
+        border-radius: 15px;
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+    }
+    .btn-gradient {
+        background: linear-gradient(45deg, #007bff, #00b4d8);
+        border: none;
+    }
+    .btn-gradient:hover {
+        background: linear-gradient(45deg, #0056b3, #0096c7);
+    }
+    h1.display-4 {
+        font-weight: 700;
+    }
+    .card-title {
+        color: #495057;
+        font-weight: 600;
+    }
+    .form-control-lg {
+        border: 2px solid #ced4da;
+        box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+    }
+</style>
+{% endblock %}

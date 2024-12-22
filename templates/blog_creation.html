@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <!-- 블로그 게시글 작성 섹션 -->
+    <header class="bg-light py-10">
+        <div class="container px-3">
+            <div class="text-center my-5">
+                <h1 class="fw-bolder">블로그 게시글 작성하기</h1>
+                <p class="lead mb-0">새로운 문제 풀이나 관련 자료를 공유해주세요.</p>
+            </div>
+        </div>
+    </header>
+
+    <!-- 게시글 작성 폼 -->
+    <section class="py-5">
+        <div class="container px-5">
+            <div class="row justify-content-center">
+                <div class="col-lg-20">
+                    <div class="card shadow border-0">
+                        <div class="card-body p-5">
+                            <!-- 수정된 form 태그 -->
+                            <form method="POST" action="{% url 'blog_creation' %}" enctype="multipart/form-data">
+                                {% csrf_token %}
+                                <div class="mb-3">
+                                    <label for="title" class="form-label">제목</label>
+                                    <input type="text" class="form-control" id="title" name="title" placeholder="제목을 입력하세요" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="category" class="form-label">카테고리</label>
+                                    <!-- 사용자가 직접 입력할 수 있는 input 태그로 변경 -->
+                                    <input type="text" class="form-control" id="category" name="category" placeholder="카테고리를 입력하세요" value="{{ tags }}" required>
+                                </div>
+                                
+                                {% if form.initial.content %}<div class="mb-3">
+                                    <label for="problem" class="form-label">문제</label>
+                                    <textarea class="form-control" id="problem" name="problem" rows="5" readonly>{{ form.initial.content }}</textarea>
+                                </div>
+                                <!-- 문제 정보를 숨겨진 필드로 추가해서 서버에 전달 -->
+                                <input type="hidden" name="contest_id" value="{{ contest_id }}">
+                                <input type="hidden" name="index" value="{{ index }}">
+                                <input type="hidden" name="problem_name" value="{{ problem_name }}">
+                                <input type="hidden" name="tags" value="{{ tags }}">
+                                <div class="d-grid gap-2 mt-3">
+                                    <a href="https://codeforces.com/contest/{{ form.initial.contestId }}/problem/{{ form.initial.index }}" class="btn btn-primary" target="_blank">문제 바로가기</a>
+                                </div>
+                                {% endif %}
+                                <div class="mb-3">
+                                    <label for="content" class="form-label">내용</label>
+                                    <textarea class="form-control" id="content" name="content" rows="15" placeholder="내용을 입력하세요" required></textarea>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="image" class="form-label">이미지 첨부 (선택사항)</label>
+                                    <input type="file" class="form-control" id="image" name="image">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="visibility" class="form-label">공개 여부</label>
+                                    <select class="form-select" id="visibility" name="visibility" required>
+                                        <option value="public">전체공개</option>
+                                        <option value="private">나만 보기</option>
+                                    </select>
+                                </div>
+                                <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                                    <button type="submit" class="btn btn-primary">게시글 등록</button>
+                                    <a href="{% url 'blog_post' %}" class="btn btn-secondary">취소</a>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}
